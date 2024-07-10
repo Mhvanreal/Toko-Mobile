@@ -16,7 +16,7 @@ class DatabaseHelper {
   }
 
   Future<Database> _initDatabase() async {
-    String path = join(await getDatabasesPath(), 'app_database.db');
+    String path = await _getDbPath();
     return await openDatabase(
       path,
       version: 1,
@@ -24,8 +24,28 @@ class DatabaseHelper {
     );
   }
 
-  Future _onCreate(Database db, int version) async {
-  await db.execute('''
+  Future<String> _getDbPath() async {
+    return join(await getDatabasesPath(), 'app_database.db');
+  }
+
+ Future<void> deleteDatabase() async {
+  String path = await _getDbPath();
+  await databaseFactory.deleteDatabase(path);
+  _database = null;
+}
+
+  Future<void> insertUser(Map<String, dynamic> user) async {
+    Database db = await database;
+    await db.insert('user', user);
+  }
+
+  Future<List<Map<String, dynamic>>> getAllUsers() async {
+    Database db = await database;
+    return await db.query('user');
+  }
+
+  Future<void> _onCreate(Database db, int version) async {
+    await db.execute('''
     CREATE TABLE user (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       name TEXT,
@@ -36,35 +56,5 @@ class DatabaseHelper {
       jawaban TEXT
     )
   ''');
-
-    // Contoh Table yang berelasi //
-
-    //   await db.execute('''
-    //   CREATE TABLE posts (
-    //     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    //     user_id INTEGER,
-    //     title TEXT,
-    //     content TEXT,
-    //     FOREIGN KEY (user_id) REFERENCES user (id) ON DELETE CASCADE
-    //   )
-    // ''');
   }
-
-  Future<int> insertUser (Map<String, dynamic> user ) async {
-    Database db = await database;
-    return await db.insert('user', user);
-  }
-
-  Future<List<Map<String, dynamic>>> getAllUsers() async {
-    Database db = await database;
-    return await db.query('user');
-  }
-
-Future<void> deleteDatabase() async {
-    String path = join(await getDatabasesPath(), 'app_database.db');
-    await databaseFactory.deleteDatabase(path);
-  }
-  
-
-  
 }
