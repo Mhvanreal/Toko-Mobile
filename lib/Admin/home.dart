@@ -1,4 +1,7 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:toko/Admin/profile.dart';
 
 class AdminHome extends StatefulWidget {
   const AdminHome({super.key});
@@ -8,18 +11,190 @@ class AdminHome extends StatefulWidget {
 }
 
 class __AdminHomeState extends State<AdminHome> {
+final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  var height, width;
+  List imgData = [
+    "images/"
+    "images/"
+    "images/"
+    "images/"
+    "images/"
+    "images/"
+
+  ];
+  
+  List titles = [
+    "Data Barang",
+    "kasir",
+    "Data karyawan",
+    "Data Suplayer",
+    "Barang Expiyer",
+  ];
+
   @override
  Widget build(BuildContext context) {
+    height = MediaQuery.of(context).size.height;
+    width = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Admin Home Page'),
+    key: _scaffoldKey,
+      body: SingleChildScrollView(
+        child: Container(
+              color: Colors.indigo,
+              // height: height,
+              width: width,
+          child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+          Container(
+            decoration: BoxDecoration(),
+            height: height * 0.25,
+            width: width,
+            child: Column(
+              children : [
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: 35,
+                    left: 15,
+                    right: 15,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                    InkWell(
+                      onTap: () {
+                        _scaffoldKey.currentState!.openDrawer();
+                      },
+                      child: Icon(Icons.sort, color: Colors.white, size: 40),
+                    ),
+                    ClipRRect(
+                      child: Icon(Icons.account_circle,color: Colors.white, size: 40),
+                      // height: 40,
+                      // width : 40,
+                    ),
+                  ],),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    top: 20,
+                    right: 15,
+                    left: 15,
+                  ),
+                  child: Column(
+                    children: [
+                      Text("Dashboard",style: TextStyle( fontSize: 30,color: Colors.white,fontWeight: FontWeight.w500, letterSpacing: 1,)),
+                      Text("Last Update 20 Jul 2024",style: TextStyle( fontSize: 16,color: Colors.white54, letterSpacing: 1,)),
+                    ],
+                  ),
+                  ),
+              ],
+            ),
+          ),
+          SingleChildScrollView(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
+                ),
+              ),
+              // height: height * 0.75,
+              width: width,
+              padding: EdgeInsets.only(bottom: 20),
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+              childAspectRatio: 1.1,
+              mainAxisSpacing: 25,
+                  ),
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: imgData.length,
+              itemBuilder: (context, index) {
+                return InkWell(
+                  onTap: () {},
+                  child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          spreadRadius: 1,
+                          blurRadius: 6,
+                        )
+                      ]
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        // Image.asset(imgData[index],
+                        // width: 100,),
+                        Text(
+                          titles[index],
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        )
+                      ],
+                      
+                    ),
+                  ),
+                );
+              }
+              ),
+            ),
+          ),
+          ],
+        )
+          ),
       ),
-      body: Center(
-        child: Text(
-          'Welcome Admin!',
-          style: TextStyle(fontSize: 24),
+
+        drawer: Drawer (
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 242, 71, 9),
+              ),
+              child: Text(
+                'Nama',style: TextStyle(color: Colors.white),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.account_circle),
+              title: Text('Profile'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Profile()),
+                );
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.exit_to_app),
+              title: Text('Keluar'),
+              onTap: () => showLogoutDialog(context),
+            )
+          ],
         ),
       ),
     );
+ }
+
+  void showLogoutDialog(BuildContext context) {
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.warning,
+      animType: AnimType.topSlide,
+      showCloseIcon: true,
+      title: 'Warning',
+      desc: 'Apakah Anda yakin ingin keluar?',
+      btnCancelOnPress: () {},
+      btnOkOnPress: () {
+        // logout();
+      },
+    )..show();
   }
 }
