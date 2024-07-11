@@ -58,6 +58,25 @@ class DatabaseHelper {
       jawaban TEXT
     )
   ''');
+  
+  await db.execute('''
+  CREATE TABLE barang (
+  id_barang INTEGER PRIMARY KEY AUTOINCREMENT,
+  nama_barang TEXT,
+  harga_jual TEXT,
+  tgl_exp TEXT,
+  stok TEXT
+    )
+  ''');
+
+  await db.execute('''
+  CREATE TABLE suplyer (
+  id_sup INTEGER PRIMARY KEY AUTOINCREMENT,
+  nama_sup TEXT,
+  no_telp TEXT,
+  alamat TEXT,
+  )
+    ''');
 
   }
 
