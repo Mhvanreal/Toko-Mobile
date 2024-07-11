@@ -1,6 +1,8 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
+
+
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
   factory DatabaseHelper() => _instance;
@@ -28,11 +30,11 @@ class DatabaseHelper {
     return join(await getDatabasesPath(), 'app_database.db');
   }
 
- Future<void> deleteDatabase() async {
-  String path = await _getDbPath();
-  await databaseFactory.deleteDatabase(path);
-  _database = null;
-}
+//  Future<void> deleteDatabase() async {
+//   String path = await _getDbPath();
+//   await databaseFactory.deleteDatabase(path);
+//   _database = null;
+// }
 
   Future<void> insertUser(Map<String, dynamic> user) async {
     Database db = await database;
@@ -56,5 +58,8 @@ class DatabaseHelper {
       jawaban TEXT
     )
   ''');
+
   }
+
+  
 }

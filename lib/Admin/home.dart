@@ -1,5 +1,10 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:toko/Admin/data_barang.dart';
+import 'package:toko/Admin/data_brg_Expiyer.dart';
+import 'package:toko/Admin/data_karyawan.dart';
+import 'package:toko/Admin/data_suplayer.dart';
+import 'package:toko/Admin/kasir.dart';
 import 'package:toko/Admin/profile.dart';
 
 class AdminHome extends StatefulWidget {
@@ -127,7 +132,36 @@ class __AdminHomeState extends State<AdminHome> {
                     itemCount: imgData.length,
                     itemBuilder: (context, index) {
                       return InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          if (index == 0){
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => DataBarang()),);
+                          }else if (index == 1){
+                            Navigator.push(
+                              context, 
+                              MaterialPageRoute(builder: (context) => KasirAdmin()),);
+                          }else if (index == 2){
+                            Navigator.push(
+                              context, 
+                              MaterialPageRoute(builder: (context) => DtKaryawan()),);
+                          }else if (index == 3){
+                             Navigator.push(
+                              context, 
+                              MaterialPageRoute(builder: (context) => DataSuplayer()),);
+                          }else if (index == 4){
+                             Navigator.push(
+                              context, 
+                              MaterialPageRoute(builder: (context) => BrgExpiyer()),);
+                          }
+                          //else if (index == 5){
+                          //    Navigator.push(
+                          //     context, 
+                          //     MaterialPageRoute(builder: (context) => DtKaryawan()),);
+                          // }
+                          
+
+                        },
                         child: Container(
                           margin: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
                           decoration: BoxDecoration(
