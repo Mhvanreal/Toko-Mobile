@@ -1,7 +1,8 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:toko/Admin/barang_exp.dart';
 import 'package:toko/Admin/data_barang.dart';
-import 'package:toko/Admin/data_brg_Expiyer.dart';
+
 import 'package:toko/Admin/data_karyawan.dart';
 import 'package:toko/Admin/data_suplayer.dart';
 import 'package:toko/Admin/kasir.dart';
@@ -20,8 +21,8 @@ class __AdminHomeState extends State<AdminHome> {
 
    List imgData = [
     "images/img_barang.png",
-    "images/img_karyawan.png",
     "images/img_shop.png",
+    "images/img_karyawan.png",
     "images/img_barang.png",
     "images/img_barang.png",
     "images/img_shop.png",
@@ -136,7 +137,7 @@ class __AdminHomeState extends State<AdminHome> {
                           if (index == 0){
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => DataBarang()),);
+                              MaterialPageRoute(builder: (context) => DataBarangAd()),);
                           }else if (index == 1){
                             Navigator.push(
                               context, 
@@ -149,7 +150,8 @@ class __AdminHomeState extends State<AdminHome> {
                              Navigator.push(
                               context, 
                               MaterialPageRoute(builder: (context) => DataSuplayer()),);
-                          }else if (index == 4){
+                          }
+                          else if (index == 4){
                              Navigator.push(
                               context, 
                               MaterialPageRoute(builder: (context) => BrgExpiyer()),);

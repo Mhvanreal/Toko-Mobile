@@ -1,19 +1,19 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class DataBarang extends StatefulWidget {
-  const DataBarang({super.key});
+class BrgExpiyer extends StatefulWidget {
+  const BrgExpiyer({super.key});
 
   @override
-  State<DataBarang> createState() => _DataBarangState();
+  State<BrgExpiyer> createState() => _BrgExpiyerState();
 }
 
-class _DataBarangState extends State<DataBarang> {
+class _BrgExpiyerState extends State<BrgExpiyer> {
   @override
    Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Data Barang'),
+        title: Text('Data expiyer'),
       ),
       body: Center(
         child: Text(

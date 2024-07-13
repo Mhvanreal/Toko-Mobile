@@ -16,6 +16,7 @@ class _LoginState extends State<Login> {
   final TextEditingController email = TextEditingController();
   final TextEditingController password = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  // final DatabaseHelper _databaseHelper = DatabaseHelper();
   bool _isObscure = true;
 
   void auth() async {
@@ -27,7 +28,6 @@ class _LoginState extends State<Login> {
       where: 'email = ? AND password = ?',
       whereArgs: [email.text, password.text],
     );
-
     if (user.isNotEmpty) {
       final role = user.first['role'];
       if (role == 'admin') {
@@ -36,7 +36,6 @@ class _LoginState extends State<Login> {
         Get.to(KaryawanHome());
       }
     } else {
-      // Show error message
       showDialog(
         context: context,
         builder: (context) {
@@ -71,7 +70,7 @@ class _LoginState extends State<Login> {
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(20.0),
           child: Form(
-            key: _formKey, // Assign _formKey to the Form widget
+            key: _formKey,
             child: Column(
               children: [
                 SizedBox(height: 10),
