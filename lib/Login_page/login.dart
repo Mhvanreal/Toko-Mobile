@@ -4,6 +4,7 @@ import 'package:toko/Database_Sql/DB.dart';
 import 'package:toko/Login_page/Register.dart';
 import 'package:get/get.dart';
 import 'package:toko/karyawan/homekaryawan.dart';
+import 'package:toko/Model/globals.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -19,21 +20,25 @@ class _LoginState extends State<Login> {
   // final DatabaseHelper _databaseHelper = DatabaseHelper();
   bool _isObscure = true;
 
-  void auth() async {
+
+  void auth(BuildContext context) async {
     final dbHelper = DatabaseHelper();
     final db = await dbHelper.database;
-
     final user = await db.query(
       'user',
       where: 'email = ? AND password = ?',
       whereArgs: [email.text, password.text],
     );
+
     if (user.isNotEmpty) {
+      loggedInUser = user.first;
+      print('User logged in: ${loggedInUser}');
+
       final role = user.first['role'];
       if (role == 'admin') {
-        Get.to(AdminHome());
+        Get.to(() => AdminHome());
       } else if (role == 'karyawan') {
-        Get.to(KaryawanHome());
+        Get.to(() => KaryawanHome());
       }
     } else {
       showDialog(
@@ -55,6 +60,7 @@ class _LoginState extends State<Login> {
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +168,7 @@ class _LoginState extends State<Login> {
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      auth();
+                      auth(context);
                     }
                   },
                   style: ElevatedButton.styleFrom(

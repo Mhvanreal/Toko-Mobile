@@ -2,8 +2,9 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:toko/Admin/reStok_barang.dart';
 import 'package:toko/Admin/tambah_barang.dart';
-import 'package:toko/Database_Sql/DB.dart'; // Import halaman form tambah_barang
+import 'package:toko/Database_Sql/DB.dart';
 
 class DataBarangAd extends StatefulWidget {
   const DataBarangAd({super.key});
@@ -19,33 +20,106 @@ class _DataBarangAdState extends State<DataBarangAd> {
   @override
   void initState() {
     super.initState();
-    _futurebarang = DatabaseHelper().getDataBarang();
+    _futurebarang = DatabaseHelper().getAllBarang();
   }
 
   Future<void> DeleteBarang(int id) async {
     final db = await DatabaseHelper().database;
     await db.delete('barang', where: 'id_barang = ?', whereArgs: [id]);
     setState(() {
-      _futurebarang = DatabaseHelper().getDataBarang();
+      _futurebarang = DatabaseHelper().getAllBarang(); 
     });
   }
 
   void confirmDelete(int id, BuildContext context) {
-  AwesomeDialog(
-    context: context,
-    dialogType: DialogType.warning,
-    animType: AnimType.bottomSlide,
-    title: 'Hapus Data',
-    desc: 'Apakah Anda yakin ingin menghapus data ini?',
-    btnCancelOnPress: () {},
-    btnOkOnPress: () async {
-      await DeleteBarang(id);
-    },
-  )..show();
-}
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.warning,
+      animType: AnimType.bottomSlide,
+      title: 'Hapus Data',
+      desc: 'Apakah Anda yakin ingin menghapus data ini?',
+      btnCancelOnPress: () {},
+      btnOkOnPress: () async {
+        await DeleteBarang(id);
+      },
+    )..show();
+  }
 
+  void editBarang(Map<String, dynamic> barang) {
+    // Implementasi edit barang
+  }
 
-  void editBarang(Map<String, dynamic> barang) {}
+  void caribarang() {
+    setState(() {
+      _futurebarang = DatabaseHelper().searchbarang(
+        keyword: _searchController.text,
+      );
+    });
+  }
+
+  void showDetailDialog(BuildContext context, int idBarang) async {
+    Map<String, dynamic> barang = await DatabaseHelper().getBarangDetail(idBarang); // Gunakan getBarangDetail
+
+    AwesomeDialog(
+      context: context,
+      dialogType: DialogType.info,
+      animType: AnimType.leftSlide,
+      title: '',
+      desc: '',
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Align(
+            alignment: Alignment.center,
+            child: Text(
+              '${barang['nama_barang']}',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 21,
+              ),
+            ),
+          ),
+          Divider(),
+          Text(
+            'Id Barang: ${barang['id_barang']}',
+            style: TextStyle(fontSize: 18),
+          ),
+          Divider(),
+          Text(
+            'Harga PerPcs: ${barang['harga_jual']}',
+            style: TextStyle(fontSize: 18),
+          ),
+          Divider(),
+          Text(
+            'Harga PerPax: ${barang['harga_per_pax']}',
+            style: TextStyle(fontSize: 18),
+          ),
+          Divider(),
+          Text(
+            'Stok satuan: ${barang['stok_biji']}',
+            style: TextStyle(fontSize: 18),
+          ),
+          Divider(),
+          Text(
+            'Stok Pax: ${barang['stok_pax']}',
+            style: TextStyle(fontSize: 18),
+          ),
+          Divider(),
+          Text(
+            'Jumlah Barang perPax: ${barang['jumlah_per_pax']}',
+            style: TextStyle(fontSize: 18),
+          ),
+          Divider(),
+          Text(
+            'Nama Supplier: ${barang['nama_sup']}',
+            style: TextStyle(fontSize: 18),
+          ),
+          Divider(),
+        ],
+      ),
+      btnOkOnPress: () {},
+    )..show();
+  }
 
   @override
   void dispose() {
@@ -77,6 +151,9 @@ class _DataBarangAdState extends State<DataBarangAd> {
                   borderSide: BorderSide.none,
                 ),
               ),
+              onChanged: (value) {
+                caribarang();
+              },
             ),
             SizedBox(height: 16),
             Expanded(
@@ -110,7 +187,7 @@ class _DataBarangAdState extends State<DataBarangAd> {
                                     ),
                                   ),
                                   Text(
-                                    'Id Barang: ${barang['id_barang'].toString() }',
+                                    'Id Barang: ${barang['id_barang']}',
                                     style: TextStyle(
                                       fontSize: 16,
                                       color: Colors.black,
@@ -118,30 +195,42 @@ class _DataBarangAdState extends State<DataBarangAd> {
                                   ),
                                 ],
                               ),
-                              subtitle: Text(
-                                'Harga: ${barang['harga_jual']} \nStok: ${barang['stok']}',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                      color: Colors.black,
-                                ),
-                              ),
                               trailing: SizedBox(
-                                width: 96, // Set width to fit two IconButtons
+                                width: 110,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    IconButton(
-                                      icon: Icon(Icons.edit),
-                                      onPressed: () => editBarang(barang),
+                                    Expanded(
+                                      child: IconButton(
+                                        icon: Icon(Icons.update),
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => RestokBarang(idBarang: barang['id_barang'])),
+                                          );
+                                        },
+                                      ),
                                     ),
-                                   IconButton(
-                                    icon: Icon(Icons.delete),
-                                    onPressed: () => confirmDelete(barang['id_barang'], context),
-                                  ),
-
+                                    SizedBox(width: 5),
+                                    Expanded(
+                                      child: IconButton(
+                                        icon: Icon(Icons.edit),
+                                        onPressed: () => editBarang(barang),
+                                      ),
+                                    ),
+                                    SizedBox(width: 5),
+                                    Expanded(
+                                      child: IconButton(
+                                        icon: Icon(Icons.delete),
+                                        onPressed: () => confirmDelete(barang['id_barang'], context),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
+                              onTap: () {
+                                showDetailDialog(context, barang['id_barang']); // Memanggil dengan id_barang
+                              },
                             ),
                             Divider(), // Add a divider for better UI separation
                           ],

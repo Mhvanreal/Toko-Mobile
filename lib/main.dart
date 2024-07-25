@@ -8,7 +8,7 @@ import 'package:toko/Page/splash_screen.dart';
 Future<void> main() async {
   runApp(MyApp());
   // configLoading();
-  // await DatabaseHelper().deleteDatabase();
+  // await DatabaseHelper().deleteDatabaseFile();
 }
 
 

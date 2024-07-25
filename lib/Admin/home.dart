@@ -1,5 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:toko/Admin/barang_exp.dart';
 import 'package:toko/Admin/data_barang.dart';
 
@@ -7,6 +9,8 @@ import 'package:toko/Admin/data_karyawan.dart';
 import 'package:toko/Admin/data_suplayer.dart';
 import 'package:toko/Admin/kasir.dart';
 import 'package:toko/Admin/profile.dart';
+import 'package:toko/Login_page/login.dart';
+import 'package:toko/Model/globals.dart';
 
 class AdminHome extends StatefulWidget {
   const AdminHome({super.key});
@@ -212,8 +216,8 @@ class __AdminHomeState extends State<AdminHome> {
                 color: Color.fromARGB(255, 242, 71, 9),
               ),
               child: Text(
-                'Nama',
-                style: TextStyle(color: Colors.white),
+                 'Nama: ${loggedInUser?['name'] ?? 'No user'}',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
               ),
             ),
             ListTile(
@@ -249,7 +253,9 @@ void showLogoutDialog(BuildContext context) {
     desc: 'Apakah Anda yakin ingin keluar?',
     btnCancelOnPress: () {},
     btnOkOnPress: () {
+      logout();
       Navigator.of(context).pop();
+      Get.offAll(() => Login());
     },
   )..show();
 }
