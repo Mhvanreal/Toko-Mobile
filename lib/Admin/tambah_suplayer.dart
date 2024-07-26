@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -23,6 +24,7 @@ class _AddSuplayerState extends State<AddSuplayer> {
   }
 
   Future<void> Addsup(BuildContext context) async {
+    try{
     final database = await openDatabase(
       join(await getDatabasesPath(), 'app_database.db'),
       version: 1,
@@ -47,8 +49,18 @@ class _AddSuplayerState extends State<AddSuplayer> {
       SnackBar(
         content: Text('Data Suplayer berhasil ditambahkan'),
         duration: Duration(seconds: 4),
+        backgroundColor: Colors.green,
       ),
     );
+    Navigator.of(context).pop();
+  }catch (e){
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Gagal menambahkan data suplayer: $e'),
+      backgroundColor: Colors.red,
+      duration: Duration(seconds: 3),
+      ),
+    );
+  }
   }
 
   @override
@@ -157,12 +169,12 @@ class _AddSuplayerState extends State<AddSuplayer> {
                 onPressed: () async {
                   await Addsup(context);
                   Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Data Suplyer berhasil ditambahkan'),
-                      duration: Duration(seconds: 2),
-                    ),
-                  );
+                  // ScaffoldMessenger.of(context).showSnackBar(
+                  //   SnackBar(
+                  //     content: Text('Data Suplyer berhasil ditambahkan'),
+                  //     duration: Duration(seconds: 2),
+                  //   ),
+                  // );
                 },
                 style: ElevatedButton.styleFrom(
                     minimumSize: Size(double.infinity, 50),

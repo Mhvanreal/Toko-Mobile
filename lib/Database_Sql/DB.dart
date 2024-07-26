@@ -21,8 +21,9 @@ class DatabaseHelper {
     String path = await _getDbPath();
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: _onCreate,
+      // onUpgrade: _onUpgrade,
     );
   }
 
@@ -30,6 +31,7 @@ class DatabaseHelper {
     return join(await getDatabasesPath(), 'app_database.db');
   }
 
+/////////// Delete Db
 // Future<void> deleteDatabaseFile() async {
 //   final databasePath = await getDatabasesPath();
 //   final path = join(databasePath, 'app_database.db');
@@ -50,7 +52,7 @@ class DatabaseHelper {
     )
   ''');
   
-  await db.execute('''
+    await db.execute('''
     CREATE TABLE barang (
       id_barang INTEGER PRIMARY KEY AUTOINCREMENT,
       nama_barang TEXT,
@@ -217,6 +219,15 @@ Future<List<Map<String, dynamic>>> searchSuplayer({String? keyword}) async {
 
     return maps;
   }
+
+//   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+//   if (oldVersion < 2) {
+//     await db.execute('''
+//       ALTER TABLE dtl_suply ADD COLUMN reStok_pax INTEGER
+//     ''');
+//   }
+// }
+
 
 
 }

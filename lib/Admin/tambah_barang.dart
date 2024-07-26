@@ -13,7 +13,7 @@ class TambahBarang extends StatefulWidget {
 
 class _TambahBarangState extends State<TambahBarang> {
   TextEditingController _namaBarangController = TextEditingController();
-  TextEditingController _hargaJualController = TextEditingController();
+  TextEditingController _hargaJualpcsController = TextEditingController();
   TextEditingController _hargaPerPaxController = TextEditingController();
   TextEditingController _stokBijiController = TextEditingController();
   TextEditingController _stokPaxController = TextEditingController();
@@ -48,6 +48,7 @@ class _TambahBarangState extends State<TambahBarang> {
   }
 
   Future<void> _simpanData(BuildContext context) async {
+    try{
     if (selectedSuplayerId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -57,7 +58,6 @@ class _TambahBarangState extends State<TambahBarang> {
       );
       return;
     }
-
     final database = await openDatabase(
       join(await getDatabasesPath(), 'app_database.db'),
       version: 1,
@@ -79,7 +79,7 @@ class _TambahBarangState extends State<TambahBarang> {
     ''', [
       idBarang,
       _namaBarangController.text,
-      int.parse(_hargaJualController.text),
+      int.parse(_hargaJualpcsController.text),
       int.parse(_hargaPerPaxController.text),
       int.parse(_stokBijiController.text),
       int.parse(_stokPaxController.text),
@@ -90,30 +90,46 @@ class _TambahBarangState extends State<TambahBarang> {
     await database.rawInsert('''
       INSERT INTO dtl_suply (
         id_sup, 
-        id_barang, 
-        hargaBeli, 
+        id_barang,  
         reStok, 
+        reStok_pax,
         tgl_reStok, 
         total_harga
       ) VALUES (?, ?, ?, ?, ?, ?)
     ''', [
       selectedSuplayerId,
       idBarang,
-      int.parse(_hargaJualController.text),
-      int.parse(_stokBijiController.text) + (int.parse(_stokPaxController.text) * int.parse(_jumlahPerPaxController.text)),
+      int.parse(_stokBijiController.text),
+      int.parse(_stokPaxController.text),
       DateTime.now().toIso8601String(),
-      (int.parse(_stokBijiController.text) + (int.parse(_stokPaxController.text) * int.parse(_jumlahPerPaxController.text))) * int.parse(_hargaJualController.text),
+      int.parse(_jumlahPerPaxController.text),
+
+
+      // int.parse(_hargaJualpcsController.text),
+      // // int.parse(_hargaPerPaxController.text),
+      // int.parse(_stokBijiController.text) + (int.parse(_stokPaxController.text) * int.parse(_jumlahPerPaxController.text)),
+      // DateTime.now().toIso8601String(),
+      // // (int.parse(_stokBijiController.text) + (int.parse(_stokPaxController.text) * int.parse(_jumlahPerPaxController.text))) * int.parse(_hargaJualpcsController.text),
     ]);
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Data Barang berhasil ditambahkan'),
+        backgroundColor: Colors.green,
         duration: Duration(seconds: 4),
       ),
     );
-
     Navigator.of(context).pop();
+  }catch (e){
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Gagal menambahkan barang: $e '),
+        backgroundColor: Colors.redAccent,
+        duration: Duration(seconds: 4),
+      ),
+    );
   }
+}
 
   void _showSuplayerDialog(BuildContext context) {
     AwesomeDialog(
@@ -141,7 +157,7 @@ class _TambahBarangState extends State<TambahBarang> {
                           Navigator.of(context).pop();
                         },
                       ),
-                      Divider(), // Divider ditambahkan di sini
+                      Divider(),
                     ],
                   );
                 },
@@ -202,7 +218,7 @@ class _TambahBarangState extends State<TambahBarang> {
                   border: Border.all(color: Colors.grey[400]!),
                 ),
                 child: TextFormField(
-                  controller: _hargaJualController,
+                  controller: _hargaJualpcsController,
                   style: TextStyle(color: Colors.black),
                   decoration: InputDecoration(
                     hintText: 'Masukan harga Barang',
@@ -380,12 +396,12 @@ class _TambahBarangState extends State<TambahBarang> {
                   onPressed: () async {
                   await _simpanData(context);
                   Navigator.of(context).pop();
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Data Barang berhasil ditambahkan'),
-                      duration: Duration(seconds: 4),
-                      )
-                    );
+                  // ScaffoldMessenger.of(context).showSnackBar(
+                  //   SnackBar(
+                  //     content: Text('Data Barang berhasil ditambahkan'),
+                  //     duration: Duration(seconds: 4),
+                  //     )
+                  //   );
                   },
                   style: ElevatedButton.styleFrom(
                     minimumSize: Size(double.infinity, 50),

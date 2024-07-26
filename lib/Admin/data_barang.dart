@@ -2,6 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:toko/Admin/Edit_barang.dart';
 import 'package:toko/Admin/reStok_barang.dart';
 import 'package:toko/Admin/tambah_barang.dart';
 import 'package:toko/Database_Sql/DB.dart';
@@ -45,9 +46,15 @@ class _DataBarangAdState extends State<DataBarangAd> {
     )..show();
   }
 
-  void editBarang(Map<String, dynamic> barang) {
-    // Implementasi edit barang
-  }
+  void editBarang(BuildContext context, int idBarang) {
+  Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (context) => EditBarang(idBarang: idBarang),
+    ),
+  );
+}
+
+
 
   void caribarang() {
     setState(() {
@@ -215,7 +222,7 @@ class _DataBarangAdState extends State<DataBarangAd> {
                                     Expanded(
                                       child: IconButton(
                                         icon: Icon(Icons.edit),
-                                        onPressed: () => editBarang(barang),
+                                        onPressed: () => editBarang(context, barang['id_barang']),
                                       ),
                                     ),
                                     SizedBox(width: 5),

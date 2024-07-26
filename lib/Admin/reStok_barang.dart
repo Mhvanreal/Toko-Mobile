@@ -18,7 +18,7 @@ class _ReStokBarangPageState extends State<RestokBarang> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _RestokpcsbarangController = TextEditingController();
   final TextEditingController _RestokPaxbarangContoleer = TextEditingController();
-  final TextEditingController _hargaBeliController = TextEditingController();
+  final TextEditingController _totalhargaController = TextEditingController();
   final TextEditingController _tanggalController = TextEditingController();
 
   String? namaBarang;
@@ -70,48 +70,74 @@ class _ReStokBarangPageState extends State<RestokBarang> {
   }
 
   void _restokBarang(BuildContext context) async {
+  try {
     final database = await openDatabase(
       join(await getDatabasesPath(), 'app_database.db'),
       version: 1,
     );
 
-    int jumlahRestok = int.parse(_RestokpcsbarangController.text);
-    int hargaBeli = int.parse(_hargaBeliController.text);
+    int? jumlahRestokPcs = _RestokpcsbarangController.text.isNotEmpty
+        ? int.parse(_RestokpcsbarangController.text)
+        : null;
+    int? jumlahRestokPax = _RestokPaxbarangContoleer.text.isNotEmpty
+        ? int.parse(_RestokPaxbarangContoleer.text)
+        : null;
+    int totalHarga = int.parse(_totalhargaController.text);
 
-    await database.rawUpdate('''
-      UPDATE barang
-      SET stok_biji = stok_biji + ?
-      WHERE id_barang = ?
-    ''', 
-    [jumlahRestok, widget.idBarang]);
+    if (jumlahRestokPcs != null) {
+      await database.rawUpdate('''
+        UPDATE barang
+        SET stok_biji = stok_biji + ?
+        WHERE id_barang = ?
+      ''', [jumlahRestokPcs, widget.idBarang]);
+    }
 
-    // Insert detail restok
+    if (jumlahRestokPax != null) {
+      await database.rawUpdate('''
+        UPDATE barang
+        SET stok_pax = stok_pax + ?
+        WHERE id_barang = ?
+      ''', [jumlahRestokPax, widget.idBarang]);
+    }
+
     await database.rawInsert('''
       INSERT INTO dtl_suply (
         id_sup,
         id_barang,
-        hargaBeli,
         reStok,
+        reStok_pax,
         tgl_reStok,
         total_harga
       ) VALUES (?, ?, ?, ?, ?, ?)
-      ''', [
+    ''', [
       selectedSuplayerId,
       widget.idBarang,
-      hargaBeli,
-      jumlahRestok,
+      jumlahRestokPcs ?? 0,
+      jumlahRestokPax ?? 0,
       _tanggalController.text,
-      hargaBeli * jumlahRestok,
+      totalHarga,
     ]);
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Barang berhasil di-restok'),
+        content: Text('Barang berhasil direstok'),
+        backgroundColor: Colors.green,
         duration: Duration(seconds: 4),
       ),
     );
     Navigator.of(context).pop();
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Gagal merestok barang: $e'),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 4),
+      ),
+    );
   }
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +159,9 @@ class _ReStokBarangPageState extends State<RestokBarang> {
                   '$namaBarang',
                   style:TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 )else CircularProgressIndicator(),
-                SizedBox(height: 12,),
+                SizedBox(height: 5,),
+                Divider(),
+                SizedBox(height: 5,),
                 Text('ReStok Barang Pcs', style: TextStyle(color: Colors.black, fontSize: 16)),
                 SizedBox(height: 8),
                 Container(
@@ -201,7 +229,7 @@ class _ReStokBarangPageState extends State<RestokBarang> {
                     border: Border.all(color: Colors.grey[400]!),
                   ),
                   child: TextFormField(
-                    controller: _hargaBeliController,
+                    controller: _totalhargaController,
                     style: TextStyle(color: Colors.black),
                     decoration: InputDecoration(
                       hintText: 'Masukan Total pembelian reStok barang',
@@ -243,16 +271,48 @@ class _ReStokBarangPageState extends State<RestokBarang> {
                     ],
                   )
                 else
-                  CircularProgressIndicator(),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
+                CircularProgressIndicator(),
+                SizedBox(height: 30),
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 2),
+              child: ElevatedButton(
+               onPressed: () {
                     if (_formKey.currentState?.validate() ?? false) {
                       _restokBarang(context);
-                    }
-                  },
-                  child: Text('Submit'),
+                    Navigator.of(context).pop();
+                  //   ScaffoldMessenger.of(context).showSnackBar(
+                  //   SnackBar(
+                  //     content: Text('ReStok Barang berhail ditambahkan'),
+                  //     duration: Duration(seconds: 2),
+                  //   ),
+                  // );
+                };
+               },
+                style: ElevatedButton.styleFrom(
+                    minimumSize: Size(double.infinity, 50),
+                    backgroundColor: Colors.indigo,
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    )),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.inventory,
+                      color: Colors.yellow,
+                    ),
+                    SizedBox(
+                      width: 7,
+                    ),
+                    Text(
+                      'ReStok Barang',
+                      style: TextStyle(fontSize: 20, color: Colors.yellow),
+                    ),
+                  ],
                 ),
+              ),
+            ),
               ],
             ),
           ),
