@@ -112,18 +112,17 @@ await db.execute('''
 
  await db.execute('''
     CREATE TABLE detail_transaksi (
-      id_detail_trans INTEGER PRIMARY KEY AUTOINCREMENT,
       id_trans INTEGER,
       id_barang INTEGER,
-      nama_barang TEXT,
       qty INTEGER,
-      harga_satuan INTEGER,
+   
+
       total_harga INTEGER,
       FOREIGN KEY (id_trans) REFERENCES transaksi (id_trans),
       FOREIGN KEY (id_barang) REFERENCES barang (id_barang)
     )
   ''');
-
+  //ada column harga di detail_transaksi & Nama Barang//
   }
 
 

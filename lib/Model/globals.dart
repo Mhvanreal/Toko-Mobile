@@ -7,3 +7,4 @@ Map<String, dynamic>? loggedInUser;
 void logout() {
   loggedInUser = null;
 }
+
