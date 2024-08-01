@@ -31,7 +31,7 @@ class DatabaseHelper {
     return join(await getDatabasesPath(), 'app_database.db');
   }
 
-/////////// Delete Db
+///////// Delete Db
 // Future<void> deleteDatabaseFile() async {
 //   final databasePath = await getDatabasesPath();
 //   final path = join(databasePath, 'app_database.db');
@@ -115,8 +115,6 @@ await db.execute('''
       id_trans INTEGER,
       id_barang INTEGER,
       qty INTEGER,
-   
-
       total_harga INTEGER,
       FOREIGN KEY (id_trans) REFERENCES transaksi (id_trans),
       FOREIGN KEY (id_barang) REFERENCES barang (id_barang)

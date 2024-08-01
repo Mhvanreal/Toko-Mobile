@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
         appBarTheme: AppBarTheme(
-          color: const Color.fromARGB(255, 107, 241, 112), 
+          color: const Color.fromARGB(255, 107, 241, 112),
         ),
       ),
       builder: EasyLoading.init(),
